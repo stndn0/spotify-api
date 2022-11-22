@@ -4,7 +4,7 @@ import { getSpotifyAuthResponse } from '../helpers/parseSpotifyAuthResponse';
 
 // https://dev.to/dom_the_dev/how-to-use-the-spotify-api-in-your-react-js-app-50pn#authentication
 
-export default function Home() {
+export default function Home(props) {
   // This is the query sent by the client to the Spotify authentication server.
   const query =
   {
@@ -18,7 +18,7 @@ export default function Home() {
 
   // Store the spotify auth token as a state variable. 
   // No token (i.e. unauthorized) will default to 0.
-  const [token, setToken] = useState(0);
+  // const [token, setToken] = useState(0);
 
   // Code within useEffect will execute whenever the page is re-rendered.
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function Home() {
       localStorage.setItem("accessToken", access_token);
       localStorage.setItem("tokenType", token_type);
       localStorage.setItem("expiresIn", expires_in);
-      setToken(access_token)
+      props.setToken(access_token)
 
       console.log("DEBUG TOKEN: ", access_token)
     }
@@ -42,7 +42,7 @@ export default function Home() {
 
   const pageContent = () => {
     // Case - user not authorized -> assume they need to login to get a fresh token.
-    if (token === 0) {
+    if (props.token === 0) {
       return (
         <div>
           <h2>Not logged in.</h2>
@@ -53,7 +53,7 @@ export default function Home() {
       )
     }
 
-    
+
     // Case - user is authorized
     else {
       // Remove hashes from the URL bar to stop the useEffect 'if' condition from firing.
@@ -73,15 +73,15 @@ export default function Home() {
   */
   const deleteTokenAndData = () => {
     localStorage.clear();
-    setToken(0);
+    props.setToken(0);
   }
 
 
   return (
-    <div>
+    <div id="homepage">
       <h1>Homepage</h1>
       {pageContent()}
-      <h3>Current Token: {token}</h3>
+      <h3>Current Token: {props.token}</h3>
     </div>
   )
 }
