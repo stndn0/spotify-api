@@ -68,24 +68,14 @@ export default function Home(props) {
       window.history.replaceState({}, document.title, " ");
       return (
         <div>
-          <h2>Logged in.</h2>
-          {/* <button onClick={() => deleteTokenAndData()}>Logout</button> */}
-          <h3>Name: {props.profileInfo.display_name}</h3>
+          {/* <h2>Logged in.</h2>
+          <h3>Name: {props.profileInfo.display_name}</h3> */}
           {console.log("PROFILE INFO PROP:", props.profileInfo.display_name)}
         </div>
       )
     }
   }
 
-
-  /* Token and local storage data is cleared client side. Note that the app is still connected to the 
-  users Spotify account. If they want to 'de-authorize' the app they need to manually disconnect it via their Spotify 'manage apps' setting.
-  */
-  // const deleteTokenAndData = () => {
-  //   localStorage.clear();
-  //   props.setToken(0);
-  //   props.setProfileInfo({});
-  // }
 
 
   return (
