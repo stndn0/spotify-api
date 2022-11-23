@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getSpotifyAuthResponse } from '../helpers/parseSpotifyAuthResponse';
+import { getSpotifyUserInfo } from '../helpers/getSpotifyUserInfo';
 
 
 // https://dev.to/dom_the_dev/how-to-use-the-spotify-api-in-your-react-js-app-50pn#authentication
@@ -16,30 +17,38 @@ export default function Home(props) {
     "show_dialog": "true"
   }
 
-  // Store the spotify auth token as a state variable. 
-  // No token (i.e. unauthorized) will default to 0.
-  // const [token, setToken] = useState(0);
 
   // Code within useEffect will execute whenever the page is re-rendered.
   useEffect(() => {
     // Run if the browser url has some data within it (e.g. URL recieved from spotify auth)
     if (window.location.hash) {
-      // Object destructuring. Helper function is called and the returned variables are stored.
-      // Note that tokens are valid for 1 hour. 
-      const { access_token, expires_in, token_type } = getSpotifyAuthResponse(window.location.hash);
+      // If user authorization is successful, save the token to memory and get basic profile info.
+      if (getSpotifyAuthResponse(window.location.hash) != false) {
+        // Object destructuring. Helper function is called and the returned variables are stored.
+        // Note that tokens are valid for 1 hour. 
+        const { access_token, expires_in, token_type } = getSpotifyAuthResponse(window.location.hash);
+        console.log("DEBUG TOKEN: ", access_token)
 
-      // Note - not 100% sure if I really need localStorage. Will come back to this.
-      localStorage.clear();
-      localStorage.setItem("accessToken", access_token);
-      localStorage.setItem("tokenType", token_type);
-      localStorage.setItem("expiresIn", expires_in);
-      props.setToken(access_token)
+        // Note - not 100% sure if I really need localStorage. Will come back to this.
+        // Save the token to memory. 
+        localStorage.clear();
+        localStorage.setItem("accessToken", access_token);
+        localStorage.setItem("tokenType", token_type);
+        localStorage.setItem("expiresIn", expires_in);
+        props.setToken(access_token)
 
-      console.log("DEBUG TOKEN: ", access_token)
+        // Get basic profile information using this token.
+        getSpotifyUserInfo(props, access_token);
+      }
+
+      else {
+        console.log("ERROR: Authentication failure.")
+      }
     }
   })
 
 
+  /* Page content will change depending on whether the user is logged in. */
   const pageContent = () => {
     // Case - user not authorized -> assume they need to login to get a fresh token.
     if (props.token === 0) {
@@ -53,7 +62,6 @@ export default function Home(props) {
       )
     }
 
-
     // Case - user is authorized
     else {
       // Remove hashes from the URL bar to stop the useEffect 'if' condition from firing.
@@ -62,6 +70,8 @@ export default function Home(props) {
         <div>
           <h2>Logged in.</h2>
           <button onClick={() => deleteTokenAndData()}>Logout</button>
+          <h3>Name: {props.profileInfo.display_name}</h3>
+          {console.log("PROFILE INFO PROP:", props.profileInfo.display_name)}
         </div>
       )
     }
@@ -74,6 +84,7 @@ export default function Home(props) {
   const deleteTokenAndData = () => {
     localStorage.clear();
     props.setToken(0);
+    props.setProfileInfo({});
   }
 
 

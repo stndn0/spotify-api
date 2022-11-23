@@ -1,0 +1,24 @@
+#navbar-flex {
+    display: flex;
+    justify-content: space-between;
+    background-color: black;
+    color: white;
+    height: 64px;
+    border: 2px solid yellow;
+}
+
+#navbar-logo {
+    font-size: 32px;
+}
+
+#navbar-lhs {
+    display: flex;
+    border: 2px solid red;
+    align-items: center;
+}
+
+#navbar-rhs {
+    display: flex;
+    border: 2px solid purple;
+    align-items: center;
+}
