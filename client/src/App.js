@@ -11,7 +11,7 @@ function App() {
 
   return (
     <div id="App">
-      <Navbar profileInfo={profileInfo}></Navbar>
+      <Navbar token={token} setToken={setToken} profileInfo={profileInfo} setProfileInfo={setProfileInfo}></Navbar>
       <Routes>
         <Route path="/" element={<Home token={token} setToken={setToken} profileInfo={profileInfo} setProfileInfo = {setProfileInfo} />}></Route>
       </Routes>
