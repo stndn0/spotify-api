@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import goToAuthEndpoint, { exchangeCodeForToken, getCodeFromResponseURL } from '../helpers/login';
 import { refreshToken } from '../helpers/refreshToken';
 import { persistStateAfterRefresh } from '../helpers/setStateAndStorage';
+import { getTopArtists, getTopTracks } from '../helpers/getSpotifyUserInfo';
 
 export default function Home(props) {
   // Code within useEffect will execute whenever the page is re-rendered.
@@ -47,6 +48,10 @@ export default function Home(props) {
           <h3>Name: {props.profileInfo.display_name}</h3>
           <h3 onClick={() => refreshToken(props)}>Get New Token</h3>
           <h3>Current Token: {props.token}</h3>
+
+          <h2>Top Artists</h2>
+          {getTopArtists(props)}
+          {getTopTracks(props)}
         </div>
       )
     }

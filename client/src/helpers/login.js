@@ -60,7 +60,7 @@ export default function goToAuthEndpoint(props) {
             {
                 response_type: 'code',
                 client_id,
-                scope: 'user-read-private user-read-email user-follow-read',
+                scope: 'user-read-private user-read-email user-follow-read user-top-read',
                 code_challenge_method: 'S256',
                 code_challenge,
                 redirect_uri,
