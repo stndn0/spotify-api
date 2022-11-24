@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { Buffer } from 'buffer';
+import {setStateAndStorage, setTokenData} from './setStateAndStorage';
 
 const client_id = "edcd5a7d1ed6481ebf796b856adaefcf";
 const redirect_uri = "http://localhost:3000/";
@@ -114,10 +115,13 @@ export const exchangeCodeForToken = async (code, props) => {
             return false;
         }
         else {
-            localStorage.setItem("accessToken", data.access_token);
-            localStorage.setItem("tokenType", data.token_type);
-            localStorage.setItem("expiresIn", data.expires_in);
-            props.setToken(data.access_token)
+            setTokenData(props, data);
+            // localStorage.setItem("accessToken", data.access_token);
+            // localStorage.setItem("tokenType", data.token_type);
+            // localStorage.setItem("expiresIn", data.expires_in);
+            // localStorage.setItem("refreshToken", data.refresh_token);
+            // props.setToken(data.access_token);
+            // props.setRefreshToken(data.refresh_token);
         }
         parseTokenDataFromResponse(data);
 
@@ -126,24 +130,6 @@ export const exchangeCodeForToken = async (code, props) => {
         console.log(error)
         return false;
     }
-
-
-
-
-
-
-    // .then((response) => {
-    //     console.log("Login Debug | Received data from Spotify server...")
-
-    //     // Process the response data and extract the access token if possible.
-    //     parseTokenDataFromResponse(response.json())
-
-    //     // clear search query params in the url
-    // })
-    // .catch((error) => {
-    //     console.log("Login Debug | Error when exchanging auth code for token!")
-    //     console.log(error)
-    //   })
 }
 
 function parseTokenDataFromResponse(response) {

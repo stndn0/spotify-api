@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { getSpotifyAuthResponse } from '../helpers/parseSpotifyAuthResponse';
 import { getSpotifyUserInfo } from '../helpers/getSpotifyUserInfo';
 import goToAuthEndpoint, { exchangeCodeForToken, getCodeFromResponseURL } from '../helpers/login';
+import { refreshToken } from '../helpers/refreshToken';
 
 
 // https://dev.to/dom_the_dev/how-to-use-the-spotify-api-in-your-react-js-app-50pn#authentication
@@ -76,9 +77,10 @@ export default function Home(props) {
       window.history.replaceState({}, document.title, " ");
       return (
         <div>
-          {/* <h2>Logged in.</h2>
-          <h3>Name: {props.profileInfo.display_name}</h3> */}
+          <h3>Name: {props.profileInfo.display_name}</h3> 
           {console.log("PROFILE INFO PROP:", props.profileInfo.display_name)}
+
+          <h3 onClick={() => refreshToken(props)}>Get New Token</h3>
         </div>
       )
     }
