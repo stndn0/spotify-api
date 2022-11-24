@@ -24,10 +24,17 @@ export default function Home(props) {
     // Case - user not authorized -> assume they need to login to get a fresh token.
     if (props.token === 0) {
       return (
-        <div>
-          <h2>Not logged in.</h2>
-          <div onClick={() => goToAuthEndpoint(props)}>AUTHORIZE</div>
+        <div id="page-content-logout">
+          <div></div>
+
+          <div id="login-btn-wrapper">
+            {/* <h2>Not logged in.</h2> */}
+            <div id="login-btn" onClick={() => goToAuthEndpoint(props)}>start rewind </div>
+          </div>
+
+          <div></div>
         </div>
+
       )
     }
 
@@ -39,6 +46,7 @@ export default function Home(props) {
         <div>
           <h3>Name: {props.profileInfo.display_name}</h3>
           <h3 onClick={() => refreshToken(props)}>Get New Token</h3>
+          <h3>Current Token: {props.token}</h3>
         </div>
       )
     }
@@ -47,9 +55,9 @@ export default function Home(props) {
 
   return (
     <div id="homepage">
-      <h1>Homepage</h1>
+      {/* <h1>Homepage</h1> */}
       {pageContent()}
-      <h3>Current Token: {props.token}</h3>
+      {/* <h3>Current Token: {props.token}</h3> */}
     </div>
   )
 }
