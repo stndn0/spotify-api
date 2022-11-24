@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getSpotifyAuthResponse } from '../helpers/parseSpotifyAuthResponse';
 import { getSpotifyUserInfo } from '../helpers/getSpotifyUserInfo';
+import goToAuthEndpoint, { exchangeCodeForToken, getCodeFromResponseURL } from '../helpers/login';
 
 
 // https://dev.to/dom_the_dev/how-to-use-the-spotify-api-in-your-react-js-app-50pn#authentication
@@ -9,42 +10,51 @@ export default function Home(props) {
   // This is the query sent by the client to the Spotify authentication server.
   const query =
   {
-    "client_id": "edcd5a7d1ed6481ebf796b856adaefcf",
     "auth_endpoint": "https://accounts.spotify.com/authorize",
-    "response_type": "token",
-    "redirect_uri": "http://localhost:3000/",
+    "response_type": "code",
+    "client_id": "edcd5a7d1ed6481ebf796b856adaefcf",
     "scope": "user-follow-read",
-    "show_dialog": "true"
+    "redirect_uri": "http://localhost:3000/",
+    "show_dialog": "true",
+    "code_challenge_method": "S256",
+    "code_challenge": "ABCDEFGH"
   }
 
 
   // Code within useEffect will execute whenever the page is re-rendered.
   useEffect(() => {
-    // Run if the browser url has some data within it (e.g. URL recieved from spotify auth)
-    if (window.location.hash) {
-      // If user authorization is successful, save the token to memory and get basic profile info.
-      if (getSpotifyAuthResponse(window.location.hash) != false) {
-        // Object destructuring. Helper function is called and the returned variables are stored.
-        // Note that tokens are valid for 1 hour. 
-        const { access_token, expires_in, token_type } = getSpotifyAuthResponse(window.location.hash);
-        console.log("DEBUG TOKEN: ", access_token)
-
-        // Note - not 100% sure if I really need localStorage. Will come back to this.
-        // Save the token to memory. 
-        localStorage.clear();
-        localStorage.setItem("accessToken", access_token);
-        localStorage.setItem("tokenType", token_type);
-        localStorage.setItem("expiresIn", expires_in);
-        props.setToken(access_token)
-
-        // Get basic profile information using this token.
-        getSpotifyUserInfo(props, access_token);
-      }
-
-      else {
-        console.log("ERROR: Authentication failure.")
-      }
+    // console.log("RESPONSE RAW: ", window.location)
+    const code = getCodeFromResponseURL(window.location.search);
+    if (code != false && code != undefined) {
+      exchangeCodeForToken(code, props);
+      window.history.replaceState({}, document.title, '/');
     }
+    // const url_response = window.location.search;
+    // // Run if the browser url has some data within it (e.g. URL recieved from spotify auth)
+    // if (url_response) {
+    //   // If user authorization is successful, save the token to memory and get basic profile info.
+    //   if (getSpotifyAuthResponse(url_response) != false) {
+    //     // Object destructuring. Helper function is called and the returned variables are stored.
+    //     // Note that tokens are valid for 1 hour. 
+    //     // const { access_token, expires_in, token_type } = getSpotifyAuthResponse(window.location.hash);
+    //     // console.log("DEBUG TOKEN: ", access_token)
+
+    //     // // Note - not 100% sure if I really need localStorage. Will come back to this.
+    //     // // Save the token to memory. 
+    //     // localStorage.clear();
+    //     // localStorage.setItem("accessToken", access_token);
+    //     // localStorage.setItem("tokenType", token_type);
+    //     // localStorage.setItem("expiresIn", expires_in);
+    //     // props.setToken(access_token)
+
+    //     // // Get basic profile information using this token.
+    //     // getSpotifyUserInfo(props, access_token);
+    //   }
+
+    //   else {
+    //     console.log("ERROR: Authentication failure.")
+    //   }
+    // }
   })
 
 
@@ -55,9 +65,7 @@ export default function Home(props) {
       return (
         <div>
           <h2>Not logged in.</h2>
-          <a href=
-            {`${query.auth_endpoint}?client_id=${query.client_id}&redirect_uri=${query.redirect_uri}&response_type=${query.response_type}&scope=${query.scope}`}
-          >Authorize</a>
+          <div onClick={() => goToAuthEndpoint()}>AUTHORIZE</div>
         </div>
       )
     }

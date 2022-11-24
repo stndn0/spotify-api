@@ -1,32 +1,57 @@
-// When the user logs into Spotify, Spotify will return a URL that contains a token.
-// We need to extract this access token from the URL. Below is a helper function to achieve that.
-export const getSpotifyAuthResponse = (hash) => {
-  // Example URL - localhost:3000/#access_token=BQDvbd1UySh2eL4&token_type=Bearer&expires_in=3600
+import axios from "axios";
+import { Buffer } from 'buffer';
+import qs from 'qs';
+const client_id = "edcd5a7d1ed6481ebf796b856adaefcf";
 
-  // Check if hash contains the params we're interested in
-  const param1 = "access_token";
-  const param2 = "token_type";
-  const param3 = "expires_in";
+// https://github.com/tobika/spotify-auth-PKCE-example/blob/main/public/main.js
 
-  if (hash.includes(param1) && hash.includes(param2) && hash.includes(param3)) {
-    console.log("***TRUE***")
-    const strAfterHashtag = hash.substring(1);
-    const paramsInUrl = strAfterHashtag.split("&");
 
-    // This accumulater should return three values - token, expires_in and the token type.
-    const paramsSplitUp = paramsInUrl.reduce((accumulater, currentValue) => {
-      // console.log("Debug: ", currentValue)
-      const [key, value] = currentValue.split("=");
-      accumulater[key] = value;
-      return accumulater;
-    }, {})
 
-    return paramsSplitUp;
+
+
+
+
+// When the user logs into Spotify, Spotify will return a URL that contains an auth code.
+// We need to extract this code from the URL. 
+export const getSpotifyAuthResponse = async (response) => {
+  // Response example: ?code=AQBvAmikvgqDrUbeL5_jMV2jsmimnhNRX....
+  // Check if response contains 'code=' (the param we're interested in)
+  const param1 = "code=";
+
+  if (response.includes(param1)) {
+    // Strip away the "?code=" portion of the response to reveal the auth code
+    const authCode = response.substring(6);
+
+    // Exchange auth code for an access token
+    fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: new URLSearchParams({
+        client_id,
+        grant_type: 'refresh_token',
+        authCode,
+        redirect_uri: 'http://localhost:3000/',
+        code_verifier: 'ABCDEFGH',
+        // refresh_token,
+      }),
+    })
+      .then((response) => {
+        console.log(response)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+
+
+
   }
 
   else {
-    return false;
-  }
+  return false;
+}
 
 }
 
