@@ -3,19 +3,26 @@ import './Navbar.css'
 import { deleteTokenAndData } from '../helpers/logout'
 
 function Navbar(props) {
-    const navbarContent = () => {
+    const navbarMiddle = () => {
+        if (props.token != 0) {
+            return (
+                <>{props.profileInfo.display_name}</>
+            )
+        }
+    }
+
+    const navbarRight = () => {
         // Case - not logged in
         if (props.token === 0) {
             return (
-                <>Not logged in</>
+                <>not logged in</>
             )
         }
         // Case - logged in
         else {
             return (
                 <>
-                {props.profileInfo.display_name}
-                <button className='btn-logout' onClick={() => deleteTokenAndData(props)}>Logout</button>
+                    <button className='btn-logout' onClick={() => deleteTokenAndData(props)}>logout</button>
                 </>
             )
         }
@@ -24,11 +31,15 @@ function Navbar(props) {
     return (
         <div id="navbar-flex">
             <div id="navbar-lhs">
-                <div id="navbar-logo">Spotify API</div>
+                <div id="navbar-logo">rewind</div>
+            </div>
+
+            <div id="navbar-middle">
+                {navbarMiddle()}
             </div>
 
             <div id="navbar-rhs">
-                <div id="username">{navbarContent()}</div>
+                {navbarRight()}
             </div>
         </div>
     )

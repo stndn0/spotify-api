@@ -1,13 +1,8 @@
-import React, {useState} from "react";
 import axios from "axios";
 
-/* 
-Will probably require some async magic.
-*/
 export const getSpotifyUserInfo = (props, token) => {
     const PROFILE_ENDPOINT = "https://api.spotify.com/v1/me";
-    // console.log("Helper: ", token)
-    // console.log("Profile info: ", props.profileInfo)
+
     axios.get(PROFILE_ENDPOINT, {
         headers: {
             Authorization: "Bearer " + token,
@@ -24,5 +19,4 @@ export const getSpotifyUserInfo = (props, token) => {
     }).catch((error) => {
         console.log("API ERROR: ", error)
     });
-
 }

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
-import { Buffer } from 'buffer';
-import {setStateAndStorage, setTokenData} from './setStateAndStorage';
+import { setStateAndStorage, setTokenData } from './setStateAndStorage';
+import { getSpotifyUserInfo } from './getSpotifyUserInfo';
+import { deleteTokenAndData } from './logout';
 
 const client_id = "edcd5a7d1ed6481ebf796b856adaefcf";
 const redirect_uri = "http://localhost:3000/";
@@ -43,7 +43,10 @@ function generateUrlWithSearchParams(url, params) {
 
 // This function makes a call to Spotify's authorization endpoint in order to 'log in' the user.
 // Upon successful authorization, Spotify will return a URL containing the auth code.
-export default function goToAuthEndpoint() {
+export default function goToAuthEndpoint(props) {
+    // First clear out local storage and reset any token data
+    deleteTokenAndData(props);
+
     const codeVerifier = generateRandomString(64);
 
     generateCodeChallenge(codeVerifier).then((code_challenge) => {
@@ -93,13 +96,11 @@ export const getCodeFromResponseURL = (responseURL) => {
 // Tokens last for 1 hour and must be refreshed afterwards.
 export const exchangeCodeForToken = async (code, props) => {
     const code_verifier = localStorage.getItem('code_verifier');
-
     try {
         const response = await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                // 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + "AAAA").toString('base64'))
             },
             body: new URLSearchParams({
                 client_id,
@@ -111,19 +112,17 @@ export const exchangeCodeForToken = async (code, props) => {
         })
         const data = await response.json();
 
+        // If we got a bad response from the server then the login failed and we can't proceed further.
         if (data.access_token === undefined) {
             return false;
         }
+
+        // Otherwise save the token data and begin making calls to Spotify's server to load
+        // basic user information (i.e. name) using this token.
         else {
             setTokenData(props, data);
-            // localStorage.setItem("accessToken", data.access_token);
-            // localStorage.setItem("tokenType", data.token_type);
-            // localStorage.setItem("expiresIn", data.expires_in);
-            // localStorage.setItem("refreshToken", data.refresh_token);
-            // props.setToken(data.access_token);
-            // props.setRefreshToken(data.refresh_token);
+            getSpotifyUserInfo(props, data.access_token)
         }
-        parseTokenDataFromResponse(data);
 
     } catch (error) {
         console.log("Login Debug | Critical error during code swap for token. ");
@@ -131,28 +130,3 @@ export const exchangeCodeForToken = async (code, props) => {
         return false;
     }
 }
-
-function parseTokenDataFromResponse(response) {
-    if (response.access_token === undefined) {
-        return false;
-    }
-    let access_token;
-    try {
-        access_token = response.access_token;
-    } catch (error) {
-        console.log("Login Debug | Could not parse token data. Bad response.")
-    }
-    console.log(response)
-    console.log(response.access_token)
-
-}
-
-
-
-
-
-
-
-
-
-

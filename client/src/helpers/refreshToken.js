@@ -3,7 +3,7 @@ Access tokens are deliberately set to expire after a short time, after which new
 https://developer.spotify.com/documentation/general/guides/authorization/code-flow/
 */
 
-import React from 'react'
+import { deleteTokenAndData } from './logout';
 import { setTokenData } from './setStateAndStorage';
 
 const API_TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
@@ -26,17 +26,18 @@ export const refreshToken = async (props) => {
         })
         const data = await response.json();
 
-        // If successful Spotify will return a new access token. 
-        // We'll need to update our state and local storage variables.
-        setTokenData(props, data);
-        // props.setToken(data.access_token);
-        // props.setRefreshToken(data.refresh_token);
-        // localStorage.setItem("accessToken", data.access_token);
-        // localStorage.setItem("tokenType", data.token_type);
-        // localStorage.setItem("expiresIn", data.expires_in);
-        // localStorage.setItem("refreshToken", data.refresh_token);
-        console.log(data);
-        
+        if (data.access_token === undefined) {
+            // console.log("DEBUG: Error when attempting to refresh access token. Running logout...");
+            // deleteTokenAndData(props);
+            return false;
+        }
+        else {
+            // If successful Spotify will return a new access token. 
+            // We'll need to update our state and local storage variables.
+            setTokenData(props, data);
+            console.log("Debug | Successfully refreshed token!");
+        }
+
     } catch (error) {
         console.log("Refresh Token Error!")
         console.log(error)

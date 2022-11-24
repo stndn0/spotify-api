@@ -12,7 +12,7 @@ function App() {
 
   return (
     <div id="App">
-      <Navbar token={token} setToken={setToken} profileInfo={profileInfo} setProfileInfo={setProfileInfo}></Navbar>
+      <Navbar token={token} setToken={setToken} setRefreshToken={setRefreshToken} profileInfo={profileInfo} setProfileInfo={setProfileInfo}></Navbar>
       <Routes>
         <Route path="/" element={<Home token={token} setToken={setToken} refreshToken={refreshToken} setRefreshToken = {setRefreshToken} profileInfo={profileInfo} setProfileInfo = {setProfileInfo} />}></Route>
       </Routes>

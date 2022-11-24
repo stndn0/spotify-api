@@ -1,32 +1,49 @@
 #navbar-flex {
     display: flex;
     justify-content: space-between;
-    background-color: black;
-    color: white;
+    background-color: white;
+    color: black;
     height: 64px;
     padding: 0px 18px 0px 18px;
 }
 
 #navbar-logo {
-    font-size: 32px;
+    font-size: 28px;
+    font-weight: bold;
+    background-color: inherit;
+    color: black;
+    text-transform: lowercase;
 }
 
 #navbar-lhs {
     display: flex;
     align-items: center;
+    background-color: inherit;
+}
+
+#navbar-middle {
+    display: flex;
+    align-items: center;
+    background-color: inherit;
+    color:black;
+    font-size: 28px;
+    font-weight: bold;
 }
 
 #navbar-rhs {
     font-size: 22px;
     display: flex;
     align-items: center;
+    color: black;
+    background-color: inherit;
 }
+
 
 .btn-logout {
     font-size: 18px;
-    background-color: green;
+    background-color: rgb(180, 242, 126);
     border: none;
-    color: white;
+    color: rgb(0, 0, 0);
     width: 90px;
     height: 36px;
     margin-left: 36px;
