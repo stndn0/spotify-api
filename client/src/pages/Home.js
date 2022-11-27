@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import goToAuthEndpoint, { exchangeCodeForToken, getCodeFromResponseURL } from '../helpers/login';
 import { refreshToken } from '../helpers/refreshToken';
 import { persistStateAfterRefresh } from '../helpers/setStateAndStorage';
-import { getTopArtists, getTopTracks } from '../helpers/getSpotifyUserInfo';
+import { calculateTopAlbumFromObj, getTopArtists, getTopTracks } from '../helpers/getSpotifyUserInfo';
 
 export default function Home(props) {
   // Code within useEffect will execute whenever the page is re-rendered.
@@ -13,6 +13,20 @@ export default function Home(props) {
     if (code != false && code != undefined) {
       exchangeCodeForToken(code, props);
       window.history.replaceState({}, document.title, '/');
+    }
+
+    // Get users top tracks.
+    if (props.token != 0) {
+      let topTracks;
+      // const topTracks = getTopTracks(props);
+      // calculateTopAlbumFromObj(getTopTracks(props))
+      // calculateTopAlbumFromObj(props)
+
+      // getTopTracks(props, calculateTopAlbumFromObj)
+
+      getTopTracks(props);
+
+
     }
 
     // Persist state after page refresh
@@ -42,16 +56,15 @@ export default function Home(props) {
     // Case - user is authorized
     else {
       // Remove hashes from the URL bar to stop the useEffect 'if' condition from firing.
-      window.history.replaceState({}, document.title, " ");
+      // window.history.replaceState({}, document.title, " ");
+
       return (
         <div>
-          <h3>Name: {props.profileInfo.display_name}</h3>
           <h3 onClick={() => refreshToken(props)}>Get New Token</h3>
           <h3>Current Token: {props.token}</h3>
 
-          <h2>Top Artists</h2>
-          {getTopArtists(props)}
-          {getTopTracks(props)}
+          {/* <h2>Top Artists</h2> */}
+          {/* {getTopArtists(props)} */}
         </div>
       )
     }

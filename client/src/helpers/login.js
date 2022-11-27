@@ -1,6 +1,7 @@
 import { setStateAndStorage, setTokenData } from './setStateAndStorage';
 import { getSpotifyUserInfo } from './getSpotifyUserInfo';
 import { deleteTokenAndData } from './logout';
+import { getTopArtists, getTopTracks } from '../helpers/getSpotifyUserInfo';
 
 const client_id = "edcd5a7d1ed6481ebf796b856adaefcf";
 const redirect_uri = "http://localhost:3000/";
@@ -121,7 +122,7 @@ export const exchangeCodeForToken = async (code, props) => {
         // basic user information (i.e. name) using this token.
         else {
             setTokenData(props, data);
-            getSpotifyUserInfo(props, data.access_token)
+            getSpotifyUserInfo(props, data.access_token);
         }
 
     } catch (error) {
