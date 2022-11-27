@@ -60,7 +60,7 @@ export default function Home(props) {
 
       return (
         <div>
-          <h3 onClick={() => refreshToken(props)}>Get New Token</h3>
+          <h3 onClick={() => refreshToken(props)}>Generate New Token</h3>
           <h3>Current Token: {props.token}</h3>
 
           {/* <h2>Top Artists</h2> */}

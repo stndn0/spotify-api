@@ -6,7 +6,7 @@ function Navbar(props) {
     const navbarMiddle = () => {
         if (props.token != 0) {
             return (
-                <>{props.profileInfo.display_name}</>
+                <>user: {props.profileInfo.display_name}</>
             )
         }
     }
@@ -31,7 +31,7 @@ function Navbar(props) {
     return (
         <div id="navbar-flex">
             <div id="navbar-lhs">
-                <div id="navbar-logo">rewind</div>
+                <div id="navbar-logo">spotify</div>
             </div>
 
             <div id="navbar-middle">
