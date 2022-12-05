@@ -13,6 +13,8 @@ export const persistStateAfterRefresh = (props) => {
     if (localStorage.getItem("accessToken") != null) {
         props.setToken(localStorage.getItem("accessToken"));
         props.setRefreshToken(localStorage.getItem("refreshToken"));
+        // console.table(JSON.parse(localStorage.getItem("arrayOfTracks")))
+        // props.setTopAlbums(JSON.parse(localStorage.getItem("arrayOfTracks")))
     }
     else {
         console.log("State Debug | Nothing in local storage...")

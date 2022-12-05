@@ -17,16 +17,7 @@ export default function Home(props) {
 
     // Get users top tracks.
     if (props.token != 0) {
-      let topTracks;
-      // const topTracks = getTopTracks(props);
-      // calculateTopAlbumFromObj(getTopTracks(props))
-      // calculateTopAlbumFromObj(props)
-
-      // getTopTracks(props, calculateTopAlbumFromObj)
-
       getTopTracks(props);
-
-
     }
 
     // Persist state after page refresh
@@ -63,11 +54,22 @@ export default function Home(props) {
           <h3 onClick={() => refreshToken(props)}>Generate New Token</h3>
           <h3>Current Token: {props.token}</h3>
 
-          {/* <h2>Top Artists</h2> */}
+          <h2>Top Albums</h2>
+          {/* <div>{JSON.parse(localStorage.getItem("albumArray"))}</div> */}
+          <div>
+            {JSON.parse(localStorage.getItem("topAlbums"))[0][0]}
+            {parseTopAlbums(props)}
+          </div>
           {/* {getTopArtists(props)} */}
         </div>
       )
     }
+  }
+
+
+  const parseTopAlbums = (props) => {
+    const albums = JSON.parse(localStorage.getItem("albumArray"));
+
   }
 
 

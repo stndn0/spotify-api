@@ -72,29 +72,52 @@ export const getTopTracks = async (props, callback) => {
         offset += 49;
     }
 
-    calculateTopAlbumFromObj(returnedResponses);
+    calculateTopAlbumFromObj(returnedResponses, props);
 }
 
 // Take dirty data from Spotify API as input. Data contains a bunch of the users top tracks but the 
 // data is messy. Cleans the data and returns the top album.
-export const calculateTopAlbumFromObj = (trackObj) => {
+export const calculateTopAlbumFromObj = (trackObj, props) => {
     // First strip the track information from each track and place it in an array
-    let arrayOfTracks = [];
+    let arrayOfAlbums = [];
+    const albumCounts = new Map();
+    const albumData = new Map();
 
     // Iterate over the outer array. Outer array contains a bunch of nested arrays.
     for (let indexOuterArray = 0; indexOuterArray < trackObj.length; indexOuterArray++) {
         // Iterate over each inner array. Each array contains 50 top songs.
         for (let indexInnerArray = 0; indexInnerArray < trackObj[indexOuterArray].length; indexInnerArray++) {
-            // Add every song to arrayOfTracks
-            arrayOfTracks.push({
-                'album': trackObj[indexOuterArray][indexInnerArray].album.name,
-                'track': trackObj[indexOuterArray][indexInnerArray].name
+            const currentAlbum = trackObj[indexOuterArray][indexInnerArray].album.name;
+            const currentAlbumCover = trackObj[indexOuterArray][indexInnerArray].album.images[0];
+
+            // Add every song to arrayOfAlbums
+            arrayOfAlbums.push({
+                'album': currentAlbum,
+                'track': trackObj[indexOuterArray][indexInnerArray].name,
+                'cover': trackObj[indexOuterArray][indexInnerArray].album.images[0]
             })
+
+            // https://bobbyhadz.com/blog/javascript-increment-value-in-map
+            albumCounts.set(currentAlbum, albumCounts.get(currentAlbum) + 1 || 1);
+            albumData.set(currentAlbum, [currentAlbumCover]);
+
         }
     }
 
+    // Get most frequently recurring albums from hashmap
+    const sortedalbumCounts = topAlbums(albumCounts);
+
+
     // Save this array to local storage. It first needs to be stringified.
-    console.table(arrayOfTracks)
-    // localStorage.setItem("arrayOfTracks", JSON.stringify(arrayOfTracks));
-    // console.table(JSON.parse(localStorage.getItem("arrayOfTracks")))
+    localStorage.setItem("albumArray", JSON.stringify([arrayOfAlbums]));
+    // https://stackoverflow.com/a/48169704
+    localStorage.setItem("topAlbums", JSON.stringify([...sortedalbumCounts]));
+
+    // console.table(JSON.parse(localStorage.getItem("albumArray")))
+    console.log(JSON.parse(localStorage.getItem("topAlbums")))
+}
+
+
+const topAlbums = (hashmap) => {
+    return new Map([...hashmap.entries()].sort((a, b) => b[1] - a[1]));
 }
